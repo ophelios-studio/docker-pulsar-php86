@@ -1,0 +1,14 @@
+name: CD - Prod 🚀
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/build-publish-docker.yml
+    with:
+      image_name: "docker-pulsar-php86"
+      tag: "latest"

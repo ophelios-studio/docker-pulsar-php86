@@ -1,0 +1,14 @@
+name: CD - Dev 🚀
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/build-publish-docker.yml
+    with:
+      image_name: "docker-pulsar-php86-test"
+      tag: "latest"
