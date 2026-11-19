@@ -1,12 +1,11 @@
 # Docker Pulsar PHP 8.6
 
 Image PHP 8.6 (Apache, Bookworm) nécessaire pour les projets Pulsar, jumelle de `docker-pulsar-php84`. Elle est basée
-sur `php:8.6.0RC7-apache-bookworm` : c'est une version candidate (RC7) jusqu'à la sortie de PHP 8.6.0, prévue le
-2026-11-19. À cette date, il faudra remplacer la ligne `FROM` par `php:8.6.0-apache-bookworm`.
+sur `php:8.6.0-apache-bookworm`.
 
 ## Définitions
 
-* PHP 8.6.0RC7 (Apache-Bookworm, ZTS comme l'image officielle 8.6)
+* PHP 8.6.0 (Apache-Bookworm, ZTS comme l'image officielle 8.6)
 * Composer
 * XDebug (installé mais désactivé)
 * SSH2
