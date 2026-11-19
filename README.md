@@ -42,6 +42,7 @@ Ces deux _commits_ sont à remplacer par une version PECL dès qu'elle compile s
   recevoir la page 404 d'Apache. La construction échoue si un _vhost_ en est dépourvu; un _vhost_ ajouté par une image
   dérivée doit porter la directive lui-même.
 * `ServerTokens Prod` et `ServerSignature Off` : l'en-tête `Server` vaut simplement `Apache`.
+* `mod_status` est désactivé : aucune page `/server-status`. La construction échoue s'il est encore activé.
 
 ## Directives personnalisées pour PHP.ini
 
@@ -60,6 +61,15 @@ xdebug.use_compression = true
 * Une _pull request_ vers `main` publie `ghcr.io/ophelios-studio/docker-pulsar-php86-test:latest`.
 * Les deux workflows peuvent aussi être lancés à la main (`workflow_dispatch`). Les images sont construites en amd64 et
   en arm64.
+* Chaque lundi à 7 h 30 UTC, `CD - Prod` reconstruit l'image sans cache, depuis l'image officielle tirée à
+  nouveau, et republie `latest` : les correctifs de sécurité de Debian et d'Apache y entrent même quand rien n'est
+  poussé ici. Un lancement manuel de `CD - Prod` fait la même reconstruction. GitHub suspend une tâche planifiée après
+  60 jours sans activité dans un dépôt public : la réactiver dans l'onglet _Actions_ si cela arrive.
+* Une application reçoit ces correctifs à sa propre construction, si elle tire l'image à nouveau (`docker build
+  --pull`).
+* Les paquets Debian sont mis à jour à chaque construction et installés sans leurs recommandations
+  (`--no-install-recommends`) : ni `exim4` ni le client `ssh` ne sont dans l'image. Une image dérivée qui en a besoin
+  les installe elle-même.
 
 ## Utilisation
 
