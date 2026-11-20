@@ -17,7 +17,7 @@ sur `php:8.6.0-apache-bookworm`.
   * GD (avec freetype et jpeg)
   * OPcache
   * `lexbor` et `uri` sont nouvelles : PHP 8.6 les expose comme extensions
-* Modules Apache : rewrite, headers, expires, ssl
+* Modules Apache : rewrite, headers, expires
 
 La dernière étape de la construction échoue si une extension chargée par l'image 8.4 ne l'est pas ici, ou si XDebug
 ne se charge pas une fois activé.
@@ -43,6 +43,19 @@ Ces deux _commits_ sont à remplacer par une version PECL dès qu'elle compile s
   dérivée doit porter la directive lui-même.
 * `ServerTokens Prod` et `ServerSignature Off` : l'en-tête `Server` vaut simplement `Apache`.
 * `mod_status` est désactivé : aucune page `/server-status`. La construction échoue s'il est encore activé.
+* Aucun TLS dans l'image : ni `mod_ssl`, ni _vhost_ 443, ni clé privée. Le TLS se termine devant le conteneur (Caddy
+  ou la périphérie de l'hébergeur). La construction échoue si `ssl_module` est chargé ou si `default-ssl.conf` est
+  activé.
+
+## Retrait de mod_ssl (novembre 2026)
+
+Jusqu'en novembre 2026, l'image activait `mod_ssl`, copiait `default-ssl.conf` en fichier dans `sites-enabled` (donc
+hors de portée de `a2dissite`) et générait une clé auto-signée à la construction. Une image dérivée qui retirait
+elle-même ce _vhost_ ou ce module se construit encore si elle tolère leur absence :
+
+* supprimer un fichier avec `rm -f`, jamais `rm` seul, qui échoue quand le fichier n'existe pas;
+* `a2dismod ssl`, comme `a2dismod status`, rend 0 sur un module déjà désactivé et 1 seulement quand ses fichiers ont
+  disparu de `mods-available`. L'image les garde exprès, et sa construction échoue s'ils disparaissent.
 
 ## Directives personnalisées pour PHP.ini
 
